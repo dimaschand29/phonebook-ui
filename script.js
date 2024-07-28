@@ -17,14 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       let response;
       if (id) {
-        // Update contact
         response = await fetch(`${apiUrl}/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(contact),
         });
       } else {
-        // Create contact
         response = await fetch(`${apiUrl}/create`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -35,10 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const jsonResponse = await response.json();
 
       if (!response.ok) {
-        alert(jsonResponse.msg); // Menampilkan pesan error
+        alert(jsonResponse.msg);
       } else {
         form.reset();
-        document.getElementById("contact-id").value = ""; // Reset field contact-id
+        document.getElementById("contact-id").value = "";
         loadContacts();
       }
     } catch (error) {
@@ -54,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
         if (!response.ok) {
           const jsonResponse = await response.json();
-          alert(jsonResponse.msg); // Menampilkan pesan error
+          alert(jsonResponse.msg);
         } else {
           loadContacts();
         }
@@ -63,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const response = await fetch(`${apiUrl}/${id}`);
         const jsonResponse = await response.json();
         if (!response.ok) {
-          alert(jsonResponse.msg); // Menampilkan pesan error
+          alert(jsonResponse.msg);
         } else {
           const contact = jsonResponse.data;
           document.getElementById("contact-id").value = contact.id;
@@ -95,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Error:", error);
         alert("An unexpected error occurred");
       }
-    }, 1000); // delay 1 detik
+    }, 1000);
   });
 
   async function loadContacts() {
@@ -103,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch(`${apiUrl}/get`, { method: "GET" });
       const jsonResponse = await response.json();
       if (!response.ok) {
-        alert(jsonResponse.msg); // Menampilkan pesan error
+        alert(jsonResponse.msg);
       } else {
         const contacts = jsonResponse.data;
         displayContacts(contacts);
@@ -118,14 +116,18 @@ document.addEventListener("DOMContentLoaded", () => {
     contactsList.innerHTML = contacts
       .map(
         (contact) => `
-              <div class="contact">
-                <span>${contact.name} - ${contact.phone} - ${contact.email}</span>
-                <div>
-                  <button class="edit" data-id="${contact.id}">Edit</button>
-                  <button class="delete" data-id="${contact.id}">Delete</button>
-                </div>
+            <div class="contact row">
+              <div class="contact-details col-8 d-flex justify-content-between">
+                <span><strong>Name:</strong> ${contact.name}</span>
+                <span><strong>Phone:</strong> ${contact.phone}</span>
+                <span><strong>Email:</strong> ${contact.email}</span>
               </div>
-            `
+              <div class="col-4 text-right">
+                <button class="btn btn-sm btn-warning edit" data-id="${contact.id}">Edit</button>
+                <button class="btn btn-sm btn-danger delete" data-id="${contact.id}">Delete</button>
+              </div>
+            </div>
+          `
       )
       .join("");
   }
